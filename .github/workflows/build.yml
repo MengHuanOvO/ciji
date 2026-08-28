@@ -30,7 +30,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ciji-windows-setup
-          path: outputs\CijiSetup-*.exe
+          path: outputs/CijiSetup-*.exe
+          if-no-files-found: error
 
   apk:
     name: Android APK
@@ -83,13 +84,19 @@ jobs:
           grep -q "^platform :ios" ios/Podfile || printf "\nplatform :ios, '15.5'\n" >> ios/Podfile
           sed -i '' "s/^platform :ios, .*/platform :ios, '15.5'/" ios/Podfile
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj
-      # 未签名 IPA：可用爱思助手等自签工具安装；正式上架需配置签名（见 docs/03）
+      # 未签名 IPA：--no-codesign 只出 xcarchive，手动把 Runner.app 打进 Payload 生成 ipa（可用爱思助手等自签安装）
       - name: Build IPA (unsigned)
-        run: flutter build ipa --release --no-codesign
+        run: |
+          flutter build ipa --release --no-codesign
+          mkdir -p Payload
+          cp -R build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app Payload/
+          mkdir -p build/ios/ipa
+          zip -q -r -y build/ios/ipa/Runner.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
           name: ciji-ios-ipa
-          path: build/ios/ipa/*.ipa
+          path: build/ios/ipa/Runner.ipa
+          if-no-files-found: error
 
   release:
     name: Attach to GitHub Release

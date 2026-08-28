@@ -1,6 +1,6 @@
 ; 词迹 Ciji - Windows 安装包（Inno Setup 6）
 #define MyAppName "词迹 Ciji"
-#define MyAppVersion "0.1.6"
+#define MyAppVersion "0.1.7"
 #define MyAppExeName "ciji.exe"
 
 [Setup]
@@ -11,7 +11,7 @@ AppPublisher=WordLab
 DefaultDirName={autopf}\Ciji
 DefaultGroupName=词迹 Ciji
 UninstallDisplayIcon={app}\{#MyAppExeName}
-OutputDir=..\..\outputs
+OutputDir=..\outputs
 OutputBaseFilename=CijiSetup-{#MyAppVersion}
 Compression=lzma2
 SolidCompression=yes
