@@ -147,7 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 16),
           const Text(
-            '词迹 Ciji v0.1.1\n内置词书：高中 3500 / 大学英语四级 / 六级 / 雅思核心\n数据来源：开源项目 qwerty-learner（MIT）',
+            '词迹 Ciji v0.1.2\n内置词书：高中 3500 / 大学英语四级 / 六级 / 雅思核心\n数据来源：开源项目 qwerty-learner（MIT）',
             style: TextStyle(color: Colors.grey, fontSize: 12),
           ),
         ],

@@ -62,12 +62,13 @@ jobs:
       - name: Generate platform folders
         run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
       - run: flutter pub get
-      # ML Kit 要求 iOS 15+：把生成的 Podfile 与工程部署目标提到 15.0
+      # ML Kit 要求 iOS 15.5+：Podfile 无 platform 行则追加，并把工程部署目标提到 15.5
       - name: Patch iOS deployment target
         shell: bash
         run: |
-          sed -i '' "s/^platform :ios, .*/platform :ios, '15.0'/" ios/Podfile
-          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g' ios/Runner.xcodeproj/project.pbxproj
+          grep -q "^platform :ios" ios/Podfile || printf "\nplatform :ios, '15.5'\n" >> ios/Podfile
+          sed -i '' "s/^platform :ios, .*/platform :ios, '15.5'/" ios/Podfile
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj
       # 未签名 IPA：可用爱思助手等自签工具安装；正式上架需配置签名（见 docs/03）
       - name: Build IPA (unsigned)
         run: flutter build ipa --release --no-codesign

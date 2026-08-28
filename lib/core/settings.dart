@@ -1,3 +1,5 @@
+import 'package:sqflite/sqflite.dart';
+
 import 'database/app_database.dart';
 import 'srs/ebbinghaus_scheduler.dart';
 
