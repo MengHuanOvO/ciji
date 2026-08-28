@@ -1,6 +1,6 @@
 # 词迹 Ciji · 英语背单词
 
-跨平台（iOS + Windows + Android）英语背单词应用，基于 Flutter。
+跨平台（Android APK + iOS IPA + Windows EXE）英语背单词应用，基于 Flutter。
 
 ## 功能
 - **多方式导入单词**
@@ -41,6 +41,8 @@ installer/wordease.iss               # Inno Setup 安装包脚本
 
 ## 打包
 - **Windows EXE**：`powershell -File scripts\build_windows.ps1 -Installer` → `outputs\CijiSetup-0.1.0.exe`（详见 `docs/02-打包-EXE-Windows.md`）
+- **Android APK**：`flutter build apk --release` → `build\app\outputs\flutter-apk\app-release.apk`
+- **Android APK**：`flutter build apk --release`，或推 tag 触发 GitHub Actions
 - **iOS IPA**：在 macOS 上 `bash scripts/build_ios.sh`，或推 tag 触发 GitHub Actions（详见 `docs/03-打包-IPA-iOS.md`）
 
 ## 技术栈

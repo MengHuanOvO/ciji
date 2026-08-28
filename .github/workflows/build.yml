@@ -32,6 +32,24 @@ jobs:
           name: ciji-windows-setup
           path: outputs\CijiSetup-*.exe
 
+  apk:
+    name: Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate platform folders
+        run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
+      - run: flutter pub get
+      - name: Build APK (release)
+        run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ciji-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
   ios:
     name: iOS IPA
     runs-on: macos-latest
@@ -54,7 +72,7 @@ jobs:
 
   release:
     name: Attach to GitHub Release
-    needs: [windows, ios]
+    needs: [windows, ios, apk]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -66,6 +84,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ciji-ios-ipa
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciji-android-apk
           path: dist
       - uses: softprops/action-gh-release@v2
         with:
