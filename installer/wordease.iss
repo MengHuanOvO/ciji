@@ -1,6 +1,6 @@
 ; 词迹 Ciji - Windows 安装包（Inno Setup 6）
 #define MyAppName "词迹 Ciji"
-#define MyAppVersion "0.1.2"
+#define MyAppVersion "0.1.3"
 #define MyAppExeName "ciji.exe"
 
 [Setup]
