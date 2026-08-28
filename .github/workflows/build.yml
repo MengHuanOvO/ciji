@@ -15,6 +15,9 @@ jobs:
         with:
           channel: stable
           cache: true
+      # 仓库未提交平台目录，先由 CI 生成（不覆盖 lib/ 与 pubspec）
+      - name: Generate platform folders
+        run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
       - run: flutter pub get
       - run: flutter build windows --release
       - name: Install Inno Setup
@@ -38,10 +41,34 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Generate platform folders
+        run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
       - run: flutter pub get
+      # 未签名 IPA：可用爱思助手等自签工具安装；正式上架需配置签名（见 docs/03）
       - name: Build IPA (unsigned)
         run: flutter build ipa --release --no-codesign
       - uses: actions/upload-artifact@v4
         with:
           name: ciji-ios-ipa
           path: build/ios/ipa/*.ipa
+
+  release:
+    name: Attach to GitHub Release
+    needs: [windows, ios]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciji-windows-setup
+          path: dist
+      - uses: actions/download-artifact@v4
+        with:
+          name: ciji-ios-ipa
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**
+          draft: false
+          prerelease: false
