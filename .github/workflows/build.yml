@@ -44,54 +44,26 @@ jobs:
       - name: Generate platform folders
         run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
       - run: flutter pub get
-      # ML Kit 在 R8 minify 下缺可选语言类，v0.1 先关闭 minify/shrink：sed 替换 + 追加覆盖块（兼容 Groovy/Kotlin DSL）
-      - name: Disable R8 minify for ML Kit
+      # ML Kit R8 需要可选语言类，官方做法：追加 4 个语言依赖（保留 minify）
+      - name: Add ML Kit language deps
         shell: bash
         run: |
-          echo "--- gradle files ---"
-          ls -la android/app/build.gradle* 2>/dev/null || true
           if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/isMinifyEnabled = true/isMinifyEnabled = false/' android/app/build.gradle.kts
-            sed -i 's/isShrinkResources = true/isShrinkResources = false/' android/app/build.gradle.kts
-            cat >> android/app/build.gradle.kts <<'EOF'
-
-// CI: 关闭 R8 minify（ML Kit 可选语言类缺失问题）
-android {
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            isShrinkResources = false
-        }
-    }
-}
-EOF
-            echo "kts patched + override appended"
+            printf '%s\n' '' 'dependencies {' '    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")' '    implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")' '    implementation("com.google.mlkit:text-recognition-japanese:16.0.1")' '    implementation("com.google.mlkit:text-recognition-korean:16.0.1")' '}' >> android/app/build.gradle.kts
+            echo "kts deps appended"
           fi
           if [ -f android/app/build.gradle ]; then
-            sed -i 's/minifyEnabled true/minifyEnabled false/' android/app/build.gradle
-            sed -i 's/shrinkResources true/shrinkResources false/' android/app/build.gradle
-            cat >> android/app/build.gradle <<'EOF'
-
-// CI: 关闭 R8 minify（ML Kit 可选语言类缺失问题）
-android {
-    buildTypes {
-        release {
-            minifyEnabled false
-            shrinkResources false
-        }
-    }
-}
-EOF
-            echo "groovy patched + override appended"
+            printf '%s\n' '' 'dependencies {' "    implementation 'com.google.mlkit:text-recognition-chinese:16.0.1'" "    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.1'" "    implementation 'com.google.mlkit:text-recognition-japanese:16.0.1'" "    implementation 'com.google.mlkit:text-recognition-korean:16.0.1'" '}' >> android/app/build.gradle
+            echo "groovy deps appended"
           fi
-          echo "--- minify lines after patch ---"
-          grep -n -i "minif\|shrink" android/app/build.gradle* 2>/dev/null || true
+          tail -n 12 android/app/build.gradle.kts 2>/dev/null || tail -n 12 android/app/build.gradle
       - name: Build APK (release)
         run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: ciji-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
   ios:
     name: iOS IPA
     runs-on: macos-latest
