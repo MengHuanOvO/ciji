@@ -44,12 +44,21 @@ jobs:
       - name: Generate platform folders
         run: flutter create --org com.wordlab --project-name ciji --platforms=android,ios,windows .
       - run: flutter pub get
-      # ML Kit 在 R8 minify 下缺可选语言类，v0.1 先关闭 minify/shrink（见 docs/03 与 GitHub issue）
+      # ML Kit 在 R8 minify 下缺可选语言类，v0.1 先关闭 minify/shrink（兼容 Groovy 与 Kotlin DSL）
       - name: Disable R8 minify for ML Kit
         shell: bash
         run: |
-          sed -i 's/minifyEnabled true/minifyEnabled false/' android/app/build.gradle
-          sed -i 's/shrinkResources true/shrinkResources false/' android/app/build.gradle
+          if [ -f android/app/build.gradle ]; then
+            sed -i 's/minifyEnabled true/minifyEnabled false/' android/app/build.gradle
+            sed -i 's/shrinkResources true/shrinkResources false/' android/app/build.gradle
+            echo "patched build.gradle"
+          fi
+          if [ -f android/app/build.gradle.kts ]; then
+            sed -i 's/isMinifyEnabled = true/isMinifyEnabled = false/' android/app/build.gradle.kts
+            sed -i 's/isShrinkResources = true/isShrinkResources = false/' android/app/build.gradle.kts
+            echo "patched build.gradle.kts"
+          fi
+          ls android/app/build.gradle* 2>/dev/null || true
       - name: Build APK (release)
         run: flutter build apk --release
       - uses: actions/upload-artifact@v4
