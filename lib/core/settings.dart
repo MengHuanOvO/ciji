@@ -1,5 +1,5 @@
-import '../database/app_database.dart';
-import '../srs/ebbinghaus_scheduler.dart';
+import 'database/app_database.dart';
+import 'srs/ebbinghaus_scheduler.dart';
 
 /// 应用设置（存 SQLite settings 表）。
 class AppSettings {

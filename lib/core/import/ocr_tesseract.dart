@@ -8,6 +8,9 @@ class TesseractOcrService implements OcrService {
   String get name => 'Tesseract';
 
   @override
+  void dispose() {}
+
+  @override
   Future<String> recognize(String imagePath) async {
     final result = await Process.run('tesseract', [imagePath, 'stdout', '-l', 'eng']);
     if (result.exitCode != 0) {

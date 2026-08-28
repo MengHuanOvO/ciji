@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/import/import_service.dart';
-import '../../data/repositories/word_repository.dart';
+import '../core/import/import_service.dart';
+import '../data/repositories/word_repository.dart';
 
 /// 候选单词选择弹层；返回成功添加的数量。
 Future<int?> showCandidateSheet(

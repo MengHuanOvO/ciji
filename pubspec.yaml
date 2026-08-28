@@ -1,7 +1,7 @@
 name: ciji
 description: "词迹 Ciji - 艾宾浩斯英语背单词：拍照/相册OCR、粘贴导入、文章难词提取、每日间隔复习"
 publish_to: "none"
-version: 0.1.0+1
+version: 0.1.1+2
 
 environment:
   sdk: ">=3.3.0 <4.0.0"

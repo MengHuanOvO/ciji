@@ -4,7 +4,7 @@ import '../books/books_page.dart';
 import '../import/import_page.dart';
 import '../settings/settings_page.dart';
 import '../wordlist/wordlist_page.dart';
-import 'home_page.dart';
+import '../home/home_page.dart';
 
 /// 底部导航主壳：今日 / 单词本 / 导入 / 词书 / 设置。
 class MainShell extends StatefulWidget {
